@@ -4,6 +4,8 @@ import (
 	"github.com/kkserver/kk-lib/app"
 )
 
+const KKAppNameKey = "appname"
+
 func New(parent app.IApp) *app.App {
 
 	var v = app.NewApp(parent)
