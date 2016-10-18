@@ -12,5 +12,7 @@ func New(parent app.IApp) *app.App {
 
 	v.Service(&KKService{})(&KKConnectTask{}, &KKDisconnectTask{}, &KKSendMessageTask{}, &KKReciveMessageTask{})
 
+	v.Service(&KKRemoteService{})(&KKRemoteConnectTask{}, &KKRemoteTask{})
+
 	return v
 }

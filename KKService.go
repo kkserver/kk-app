@@ -20,8 +20,6 @@ func (S *KKService) Handle(a app.IApp, task app.ITask) error {
 
 func (S *KKService) onMessage(a app.IApp, message *kk.Message) {
 
-	log.Println(message.String())
-
 	if message.Method != "REQUEST" {
 		if message.Method == "CONNECTED" {
 			a.Set(KKAppNameKey, message.To)
@@ -62,7 +60,6 @@ func (S *KKService) onMessage(a app.IApp, message *kk.Message) {
 
 	go func() {
 		var err = a.Handle(tk)
-		log.Println(tk)
 		if err != nil && err != app.ERROR_BREAK {
 			var b, _ = json.Marshal(&app.Result{app.ERROR_UNKNOWN, err.Error()})
 			var v = KKSendMessageTask{}
@@ -150,8 +147,6 @@ func (S *KKService) HandleKKSendMessageTask(a app.IApp, task *KKSendMessageTask)
 		if task.Message.From == "" {
 			task.Message.From = S.client.Name()
 		}
-
-		log.Println("KKSendMessageTask ", task.Message.String())
 
 		S.client.Send(&task.Message, nil)
 	}
