@@ -50,7 +50,7 @@ func (S *KKService) onMessage(a app.IApp, message *kk.Message) {
 	} else if message.Type == "text/json" || message.Type == "application/json" {
 		var err = json.Unmarshal(message.Content, tk)
 		if err != nil {
-			var b, _ = json.Marshal(&app.Result{app.ERROR_UNKNOWN, "json.Unmarshal " + err.Error()})
+			var b, _ = json.Marshal(&app.Result{app.ERROR_UNKNOWN, "[json.Unmarshal] [" + err.Error() + "] " + string(message.Content)})
 			var v = KKSendMessageTask{}
 			v.Message = kk.Message{message.Method, message.To, message.From, "text/json", b}
 			a.Handle(&v)
