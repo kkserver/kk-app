@@ -1,9 +1,9 @@
 package kkapp
 
 import (
-	"encoding/json"
 	"github.com/kkserver/kk-lib/app"
 	"github.com/kkserver/kk-lib/kk"
+	"github.com/kkserver/kk-lib/kk/json"
 	"log"
 	"strings"
 	"time"
@@ -48,9 +48,9 @@ func (S *KKService) onMessage(a app.IApp, message *kk.Message) {
 		a.Handle(&v)
 		return
 	} else if message.Type == "text/json" || message.Type == "application/json" {
-		var err = json.Unmarshal(message.Content, tk)
+		var err = json.Decode(message.Content, tk)
 		if err != nil {
-			var b, _ = json.Marshal(&app.Result{app.ERROR_UNKNOWN, "[json.Unmarshal] [" + err.Error() + "] " + string(message.Content)})
+			var b, _ = json.Encode(&app.Result{app.ERROR_UNKNOWN, "[json.Decode] [" + err.Error() + "] " + string(message.Content)})
 			var v = KKSendMessageTask{}
 			v.Message = kk.Message{message.Method, message.To, message.From, "text/json", b}
 			a.Handle(&v)
@@ -61,7 +61,7 @@ func (S *KKService) onMessage(a app.IApp, message *kk.Message) {
 	go func() {
 		var err = a.Handle(tk)
 		if err != nil && err != app.ERROR_BREAK {
-			var b, _ = json.Marshal(&app.Result{app.ERROR_UNKNOWN, err.Error()})
+			var b, _ = json.Encode(&app.Result{app.ERROR_UNKNOWN, err.Error()})
 			var v = KKSendMessageTask{}
 			v.Message = kk.Message{message.Method, message.To, message.From, "text/json", b}
 			kk.GetDispatchMain().Async(func() {
@@ -71,7 +71,7 @@ func (S *KKService) onMessage(a app.IApp, message *kk.Message) {
 		} else {
 			var rs, ok = tk.(app.IAPITask)
 			if ok {
-				var b, _ = json.Marshal(rs.GetResult())
+				var b, _ = json.Encode(rs.GetResult())
 				var v = KKSendMessageTask{}
 				v.Message = kk.Message{message.Method, message.To, message.From, "text/json", b}
 				kk.GetDispatchMain().Async(func() {
