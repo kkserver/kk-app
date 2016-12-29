@@ -10,7 +10,7 @@ import (
 
 type KKRemoteService struct {
 	app.Service
-	request func(message *kk.Message, timeout time.Duration) *kk.Message
+	request func(message *kk.Message, trackId string, timeout time.Duration) *kk.Message
 	getName func() string
 }
 
@@ -28,7 +28,7 @@ func (S *KKRemoteService) HandleKKRemoteTask(a app.IApp, task *KKRemoteTask) err
 		v.Type = "text/json"
 		v.Content, _ = json.Encode(task.APITask)
 
-		var r = S.request(&v, task.Timeout)
+		var r = S.request(&v, "", task.Timeout)
 
 		if r == nil {
 			return errors.New("KKRemoteService request fail")
